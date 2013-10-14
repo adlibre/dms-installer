@@ -4,6 +4,10 @@
 #
 # Usage eg: curl -s https://raw.github.com/macropin/dms-installer/master/install.sh | bash -s all
 #
+# TODO:
+#     * Warn if iptables prevent access to http
+#     * Create an admin user interactively
+#
 
 # ------------------------------------------------------------------------------
 #
@@ -38,7 +42,6 @@ function _install_lighttpd {
     if ! rpm -q lighttpd lighttpd-fastcgi 1> /dev/null; then
         yum -y -q install lighttpd-fastcgi
         chkconfig lighttpd on
-
         cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.orig
         # Customise the config
         sed -i -e 's@^server.use-ipv6 .*@server.use-ipv6 = "disable"@g' /etc/lighttpd/lighttpd.conf # disable ipv6
@@ -53,12 +56,11 @@ function _install_lighttpd {
         sed -i -e 's@#include "conf.d/proxy.conf@include "conf.d/proxy.conf@g' /etc/lighttpd/modules.conf
         sed -i -e 's@#include "conf.d/expire.conf@include "conf.d/expire.conf@g' /etc/lighttpd/modules.conf
         sed -i -e 's@#include "conf.d/fastcgi.conf@include "conf.d/fastcgi.conf@g' /etc/lighttpd/modules.conf
-
         # Make missing dirs
         mkdir -p /var/cache/lighttpd/compress /var/run/lighttpd
         chown -R lighttpd:lighttpd /var/cache/lighttpd/ /var/run/lighttpd
         # Start
-        service lighttpd start        
+        service lighttpd restart        
     fi
 }
 
@@ -144,10 +146,17 @@ function show_usage {
     echo "usage: `basename $0` [ all ] [ dms | couchdb ]"
 }
 
+function show_banner {
+    echo "********************************************************************************"
+    echo "                      Launching Adlibre DMS Installer"
+    echo "********************************************************************************"
+}
+
 # ------------------------------------------------------------------------------
 # Tasks
 
 function couchdb_server {
+
     echo "*** Installing CouchDB ***"
     _install_epel
     _install_couchdb
@@ -160,6 +169,8 @@ function app_server {
     _install_python_requirements
     _deploy_dms
 }
+
+
 
 # ------------------------------------------------------------------------------
 # Tests
@@ -174,20 +185,28 @@ if [ "$1" == "" ]; then
     exit 99
 fi
 
+if [ "$(egrep -oe '[0-9]' /etc/redhat-release | head -n1)" -ne "6" ];
+    echo "Error: Must be run on CentOS 6"
+    exit 99
+fi
+
 # ------------------------------------------------------------------------------
 # Main
 while test $# -gt 0; do
     case "$1" in
     all)
+        show_banner
         couchdb_server
         app_server
         shift
         ;;
     dms)
+        show_banner
         app_server
         shift
         ;;
     couchdb)
+        show_banner
         couchdb_server
         shift
         ;;
