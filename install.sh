@@ -38,7 +38,27 @@ function _install_lighttpd {
     if ! rpm -q lighttpd lighttpd-fastcgi 1> /dev/null; then
         yum -y -q install lighttpd-fastcgi
         chkconfig lighttpd on
-        service lighttpd start
+
+        cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.orig
+        # Customise the config
+        sed -i -e 's@^server.use-ipv6 .*@server.use-ipv6 = "disable"@g' /etc/lighttpd/lighttpd.conf # disable ipv6
+        sed -i -e 's@#include_shell \"cat /etc/lighttpd/vhosts.d/\*.conf\"@include_shell \"cat /etc/lighttpd/vhosts.d/*.conf\"@g' /etc/lighttpd/lighttpd.conf # enable vhosts config
+        cp /etc/lighttpd/modules.conf /etc/lighttpd/modules.conf.orig
+        sed -i -e 's@#  "mod_alias"@  "mod_alias"@g' /etc/lighttpd/modules.conf
+        sed -i -e 's@#  "mod_redirect"@  "mod_redirect"@g' /etc/lighttpd/modules.conf
+        sed -i -e 's@#  "mod_rewrite"@  "mod_rewrite"@g' /etc/lighttpd/modules.conf
+        sed -i -e 's@#  "mod_setenv"@  "mod_setenv"@g' /etc/lighttpd/modules.conf
+        cp /etc/lighttpd/modules.conf /etc/lighttpd/modules.conf.orig
+        sed -i -e 's@#include "conf.d/compress.conf@include "conf.d/compress.conf@g' /etc/lighttpd/modules.conf
+        sed -i -e 's@#include "conf.d/proxy.conf@include "conf.d/proxy.conf@g' /etc/lighttpd/modules.conf
+        sed -i -e 's@#include "conf.d/expire.conf@include "conf.d/expire.conf@g' /etc/lighttpd/modules.conf
+        sed -i -e 's@#include "conf.d/fastcgi.conf@include "conf.d/fastcgi.conf@g' /etc/lighttpd/modules.conf
+
+        # Make missing dirs
+        mkdir -p /var/cache/lighttpd/compress /var/run/lighttpd
+        chown -R lighttpd:lighttpd /var/cache/lighttpd/ /var/run/lighttpd
+        # Start
+        service lighttpd start        
     fi
 }
 
@@ -61,10 +81,15 @@ function _install_python_requirements {
 }
 
 function _deploy_dms {
-        
+
+    # Disable selinux
+    sed -i -e 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
+    setenforce 0
+    
     # Add wwwpub if not exist 
     if ! getent passwd ${DMS_DEPLOY_USER} 1>/dev/null; then
         adduser ${DMS_DEPLOY_USER};
+        usermod -G lighttpd,${DMS_DEPLOY_USER} lighttpd  # allow lighttpd to read socket
     fi
 
     # Create virtualenv root
@@ -72,7 +97,8 @@ function _deploy_dms {
         mkdir -p ${DEPLOY_ROOT}
         chown ${DMS_DEPLOY_USER}.${DMS_DEPLOY_USER} ${DEPLOY_ROOT}
     fi
-
+    
+    # Deploy or redeploy
     if [ ! -d ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} ]; then
         # Deploy using Python Bootstrap
         su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT} && curl --silent https://raw.github.com/adlibre/python-bootstrap/master/bootstrap.sh | bash -s ${DEPLOY_INSTANCE} ${DMS_SOURCE_URL}"
@@ -90,6 +116,13 @@ function _deploy_dms {
     # Create env file
     if [ ! -f ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/.env ]; then 
         su ${DMS_DEPLOY_USER} -c "echo 'PATH=\$VIRTUAL_ENV/adlibre_dms:\$PATH' > ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/.env"
+    fi
+    
+    # Create local settings
+    if [ ! -f ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/adlibre_dms/local_settings.py ]; then
+        cp local_settings.py
+        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && cp adlibre_dms/local_settings.py.example adlibre_dms/local_settings.py"
+        echo "Created adlibre_dms/local_settings.py from example. You should customise this."
     fi
     
     # Run Deployfile commands
