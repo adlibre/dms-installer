@@ -81,10 +81,10 @@ function _deploy_dms {
     fi
     
     # Link in our Procfile / Deployfile to correct location
-    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ln -s deployment/Deployfile && ln -s deployment/Procfile" 
+    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ln -sf deployment/Deployfile && ln -sf deployment/Procfile" 
     
     # Link in manage.py
-    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin && ln -s ../adlibre_dms/manage.py" 
+    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin && ln -sf ../adlibre_dms/manage.py" 
     
     # Create env file
     if [ ! -f ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/.env ]; then 
