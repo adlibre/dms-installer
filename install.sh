@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # 
-# Adlibre DMS Installer
+# Adlibre DMS Installer v0.1
 #
 # Usage eg: curl -s https://raw.github.com/macropin/dms-installer/master/install.sh | bash -s all
 #
 # TODO:
-#     * Warn if iptables prevent access to http
 #     * Create an admin user interactively
-#
+#     * Warn if iptables prevent access to http
+#     * Better error handling
+#     * Add support for opererating systems other than CentOS 6
 
 # ------------------------------------------------------------------------------
 #
@@ -127,7 +128,7 @@ function _deploy_dms {
     fi
     
     # Run Deployfile commands
-    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy" 
+    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy --logpath log" 
 
     # Lighttpd config
     ln -f -s ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/lighttpd.conf /etc/lighttpd/vhosts.d/${DEPLOY_INSTANCE}.conf
@@ -148,7 +149,7 @@ function show_usage {
 
 function show_banner {
     echo "********************************************************************************"
-    echo "                      Launching Adlibre DMS Installer"
+    echo "                           Adlibre DMS Installer"
     echo "********************************************************************************"
 }
 
@@ -169,8 +170,6 @@ function app_server {
     _install_python_requirements
     _deploy_dms
 }
-
-
 
 # ------------------------------------------------------------------------------
 # Tests
