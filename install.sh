@@ -83,6 +83,11 @@ function _deploy_dms {
     # Link in our Procfile / Deployfile to correct location
     su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ln -s deployment/Deployfile && ln -s deployment/Procfile" 
     
+    # Create env file
+    if [ ! -f ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/.env ]; then
+        touch ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/.env
+    fi
+    
     # Run Deployfile commands
     su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy" 
 
