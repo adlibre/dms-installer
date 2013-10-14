@@ -10,7 +10,7 @@
 DEPLOY_ROOT='/srv/www'
 DEPLOY_INSTANCE='dms'
 DMS_DEPLOY_USER='wwwpub'
-DMS_SOURCE_URL='git+git://github.com/adlibre/Adlibre-DMS.git'
+DMS_SOURCE_URL='git+git://github.com/macropin/Adlibre-DMS.git'
 
 # ------------------------------------------------------------------------------
 # Functions
@@ -18,7 +18,7 @@ DMS_SOURCE_URL='git+git://github.com/adlibre/Adlibre-DMS.git'
 function _install_epel {
     # Install EPEL if not installed
     if ! rpm -q epel-release 1> /dev/null; then
-        rpm -Uh http://download.fedoraproject.org/pub/epel/$(egrep -oe '[0-9]' /etc/redhat-release | head -n1)/$(uname -m)/epel-release-6-8.noarch.rpm;
+        rpm -U http://download.fedoraproject.org/pub/epel/$(egrep -oe '[0-9]' /etc/redhat-release | head -n1)/$(uname -m)/epel-release-6-8.noarch.rpm;
     fi    
 }
 
