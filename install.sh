@@ -103,16 +103,16 @@ function show_usage {
 
 function couchdb_server {
     echo "*** Installing CouchDB Server ***"
-    #_install_epel
-    #_install_couchdb
+    _install_epel
+    _install_couchdb
 }
 
 function app_server {
     echo "*** Installing Adlibre DMS App Server ***"
-    #_install_epel
-    #_install_lighttpd
-    #_install_python_requirements
-    #_deploy_dms
+    _install_epel
+    _install_lighttpd
+    _install_python_requirements
+    _deploy_dms
 }
 
 # ------------------------------------------------------------------------------
