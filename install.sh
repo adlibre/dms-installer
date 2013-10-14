@@ -120,7 +120,6 @@ function _deploy_dms {
     
     # Create local settings
     if [ ! -f ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/adlibre_dms/local_settings.py ]; then
-        cp local_settings.py
         su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && cp adlibre_dms/local_settings.py.example adlibre_dms/local_settings.py"
         echo "Created adlibre_dms/local_settings.py from example. You should customise this."
     fi
