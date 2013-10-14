@@ -13,14 +13,6 @@ DMS_DEPLOY_USER='wwwpub'
 DMS_SOURCE_URL='git+git://github.com/adlibre/Adlibre-DMS.git'
 
 # ------------------------------------------------------------------------------
-# Tests
-
-if [ ! $(whoami) = "root" ]; then
-    echo "Error: Must run as root."
-    exit 99
-fi
-
-# ------------------------------------------------------------------------------
 # Functions
 
 function _install_epel {
@@ -103,11 +95,11 @@ function _deploy_dms {
 }
 
 function show_usage {
-    echo "usage: `basename $0` [ --dry-run | -n ] [ --all | hostname ... ]"
+    echo "usage: `basename $0` [ --all | -a ] [ dms | couchdb ]"
 }
 
 # ------------------------------------------------------------------------------
-
+# Tasks
 
 function couchdb_server {
     echo "*** Installing CouchDB Server ***"
@@ -124,7 +116,20 @@ function app_server {
 }
 
 # ------------------------------------------------------------------------------
+# Tests
 
+if [ ! $(whoami) = "root" ]; then
+    echo "Error: Must run as root."
+    exit 99
+fi
+
+if [ "$1" == "" ]; then
+    show_usage
+    exit 99
+fi
+
+# ------------------------------------------------------------------------------
+# Main
 while test $# -gt 0; do
     case "$1" in
     --all | -a)
