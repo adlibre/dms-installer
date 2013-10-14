@@ -2,6 +2,8 @@
 # 
 # Adlibre DMS Installer
 #
+# Usage eg: curl -s https://raw.github.com/macropin/dms-installer/master/install.sh | bash -s all
+#
 
 # ------------------------------------------------------------------------------
 #
@@ -47,7 +49,7 @@ function _install_python_requirements {
     fi
     
     # Install gcc & development libs so we can compile PIL later (FIXME: PIL Required?)
-    if ! rpm -q gcc freetype freetype-devel libpng libjpeg libpng-devel libjpeg-devel python-devel 1> /dev/null; then
+    if ! rpm -q gcc freetype freetype-devel libpng libjpeg libpng-devel libjpeg-turbo-devel python-devel 1> /dev/null; then
         yum -y -q install gcc freetype freetype-devel libpng libjpeg libpng-devel libjpeg-devel python-devel
     fi
     
