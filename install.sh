@@ -80,6 +80,9 @@ function _deploy_dms {
         su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && pip install ${DMS_SOURCE_URL}"
     fi
     
+    # Link in our Procfile / Deployfile to correct location
+    su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ln -s deployment/Deployfile && ln -s deployment/Procfile" 
+    
     # Run Deployfile commands
     su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy" 
 
@@ -104,13 +107,13 @@ function show_usage {
 # Tasks
 
 function couchdb_server {
-    echo "*** Installing CouchDB Server ***"
+    echo "*** Installing CouchDB ***"
     _install_epel
     _install_couchdb
 }
 
 function app_server {
-    echo "*** Installing Adlibre DMS App Server ***"
+    echo "*** Installing Adlibre DMS Server ***"
     _install_epel
     _install_lighttpd
     _install_python_requirements
