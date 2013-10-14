@@ -95,7 +95,7 @@ function _deploy_dms {
 }
 
 function show_usage {
-    echo "usage: `basename $0` [ --all | -a ] [ dms | couchdb ]"
+    echo "usage: `basename $0` [ all ] [ dms | couchdb ]"
 }
 
 # ------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ fi
 # Main
 while test $# -gt 0; do
     case "$1" in
-    --all | -a)
+    all)
         couchdb_server
         app_server
         shift
