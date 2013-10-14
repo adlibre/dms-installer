@@ -185,7 +185,7 @@ if [ "$1" == "" ]; then
     exit 99
 fi
 
-if [ "$(egrep -oe '[0-9]' /etc/redhat-release | head -n1)" -ne "6" ];
+if [ "$(egrep -oe '[0-9]' /etc/redhat-release | head -n1)" -ne "6" ]; then
     echo "Error: Must be run on CentOS 6"
     exit 99
 fi
