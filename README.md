@@ -47,6 +47,15 @@ For the simplest install install all the components on a single host with
 	#
 	Starting adlibre_dms with settings_prod: DMS Version: 1.1.6
 
+
+After installation you will still need to perform the following before you will
+have a usable DMS instance.
+
+* Customise your __adlibre_dms/local_settings.py__
+* Reset the _admin_ user password and email address using __manage.py__
+* Configure your document type rules in _http://dms/admin/_
+* and configure any meta data templates in CouchDB.
+
 ## Upgrade
 
 To upgrade Adlibre DMS with the latest code simply run
