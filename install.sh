@@ -149,9 +149,13 @@ function _deploy_dms {
     # TODO: add check if this is already setup.
     # New Bureaucrat method
     #su ${DMS_DEPLOY_USER} -c "echo '@reboot cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat restart 1> /dev/null' | crontab"
-
     su ${DMS_DEPLOY_USER} -c "echo '@reboot ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/manage-fcgi.sh restart settings_prod ${DEPLOY_INSTANCE}' | crontab"
 
+    # Start / restart DMS
+    echo "#"
+    echo "# Start / Restarting DMS"
+    echo "#"
+    su ${DMS_DEPLOY_USER} -c "${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/manage-fcgi.sh restart settings_prod ${DEPLOY_INSTANCE}"
 }
 
 function show_usage {
