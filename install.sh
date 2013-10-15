@@ -155,7 +155,12 @@ function _deploy_dms {
     echo "#"
     echo "# Start / Restarting DMS"
     echo "#"
-    su ${DMS_DEPLOY_USER} -c "${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/manage-fcgi.sh restart settings_prod ${DEPLOY_INSTANCE}"
+    if $NEW_DEPLOY; then
+        ACTION='start'
+    else
+        ACTION='restart'
+    fi
+    su ${DMS_DEPLOY_USER} -c "${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/manage-fcgi.sh $ACTION settings_prod ${DEPLOY_INSTANCE}"
 }
 
 function show_usage {
