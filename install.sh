@@ -133,7 +133,7 @@ function _deploy_dms {
     
     if $NEW_DEPLOY; then
         # Create super user
-        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && manage.py createsuperuser --settings=settings_prod"
+        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && manage.py createsuperuser --settings=settings_prod"
     fi
     
     # Lighttpd config
