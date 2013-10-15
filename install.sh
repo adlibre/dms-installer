@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 
-# Adlibre DMS Installer v0.1
+# Adlibre DMS Installer v0.1.0
 #
 # Usage eg: curl -s https://raw.github.com/macropin/dms-installer/master/install.sh | bash -s all
 #
@@ -8,6 +8,7 @@
 #     * Warn if iptables prevent access to http
 #     * Better error handling
 #     * Add support for opererating systems other than CentOS 6
+#     * Allow setting of superuser password
 
 # ------------------------------------------------------------------------------
 #
@@ -17,6 +18,7 @@ DEPLOY_ROOT='/srv/www'
 DEPLOY_INSTANCE='dms'
 DMS_DEPLOY_USER='wwwpub'
 DMS_SOURCE_URL='git+git://github.com/macropin/Adlibre-DMS.git'
+SUPERUSER_EMAIL='admin@example.com'
 
 # ------------------------------------------------------------------------------
 # Functions
@@ -132,12 +134,11 @@ function _deploy_dms {
     su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy --logpath log" 
     
     if $NEW_DEPLOY; then
-        # Create super user with default pass
+        # Create super user
         echo "#"
-        echo "# Creating default Super User 'admin' with password 'admin'"
+        echo "# Creating default Super User 'admin' with email '${SUPERUSER_EMAIL}'"
         echo "#"
-        CMD='echo "from django.contrib.auth.models import User; User.objects.create_superuser\(\'admin\', admin@example.com', \'admin\'\)" | manage.py shell --settings=settings_prod'
-        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && $CMD"
+        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && manage.py createsuperuser --username=admin --email=${SUPERUSER_EMAIL} --settings=settings_prod"
     fi
     
     # Lighttpd config
