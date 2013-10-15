@@ -7,7 +7,7 @@
 # TODO:
 #     * Warn if iptables prevent access to http
 #     * Better error handling
-#     * Add support for opererating systems other than CentOS 6
+#     * Add support for operating systems other than CentOS 6
 #     * Allow setting of superuser password
 
 # ------------------------------------------------------------------------------
