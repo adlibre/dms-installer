@@ -5,7 +5,6 @@
 # Usage eg: curl -s https://raw.github.com/macropin/dms-installer/master/install.sh | bash -s all
 #
 # TODO:
-#     * Create an admin user interactively
 #     * Warn if iptables prevent access to http
 #     * Better error handling
 #     * Add support for opererating systems other than CentOS 6
@@ -103,9 +102,11 @@ function _deploy_dms {
     
     # Deploy or redeploy
     if [ ! -d ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} ]; then
+        NEW_DEPLOY=true
         # Deploy using Python Bootstrap
         su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT} && curl --silent https://raw.github.com/adlibre/python-bootstrap/master/bootstrap.sh | bash -s ${DEPLOY_INSTANCE} ${DMS_SOURCE_URL}"
     else
+        NEW_DEPLOY=false
         # Redeploy
         su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && pip install ${DMS_SOURCE_URL}"
     fi
@@ -129,7 +130,12 @@ function _deploy_dms {
     
     # Run Deployfile commands
     su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy --logpath log" 
-
+    
+    if $NEW_DEPLOY; then
+        # Create super user
+        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && manage.py createsuperuser --settings=settings_prod"
+    fi
+    
     # Lighttpd config
     ln -f -s ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/lighttpd.conf /etc/lighttpd/vhosts.d/${DEPLOY_INSTANCE}.conf
     service lighttpd reload
