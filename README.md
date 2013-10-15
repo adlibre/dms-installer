@@ -7,6 +7,9 @@ install.
 
 	usage: install.sh [ all ] [ dms | couchdb ]
 
+If you wish to customise the installation please download and review the
+default configuration settings at the top of the script.
+
 ## Installation
 
 For the simplest install install all the components on a single host with
