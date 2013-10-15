@@ -17,7 +17,7 @@
 DEPLOY_ROOT='/srv/www'
 DEPLOY_INSTANCE='dms'
 DMS_DEPLOY_USER='wwwpub'
-DMS_SOURCE_URL='git+git://github.com/macropin/Adlibre-DMS.git'
+DMS_SOURCE_URL='git+git://github.com/adlibre/Adlibre-DMS.git'
 SUPERUSER_EMAIL='admin@example.com'
 
 # ------------------------------------------------------------------------------
