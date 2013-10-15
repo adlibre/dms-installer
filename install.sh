@@ -136,7 +136,7 @@ function _deploy_dms {
         echo "#"
         echo "# Creating default Super User 'admin' with password 'admin'"
         echo "#"
-        CMD='echo "from django.contrib.auth.models import User; User.objects.create_superuser(\'admin\', admin@example.com', \'admin\')" | manage.py shell --settings=settings_prod'
+        CMD='echo "from django.contrib.auth.models import User; User.objects.create_superuser\(\'admin\', admin@example.com', \'admin\'\)" | manage.py shell --settings=settings_prod'
         su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && $CMD"
     fi
     
