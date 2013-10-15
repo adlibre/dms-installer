@@ -132,8 +132,12 @@ function _deploy_dms {
     su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/bin/bureaucrat deploy --logpath log" 
     
     if $NEW_DEPLOY; then
-        # Create super user
-        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && manage.py createsuperuser --settings=settings_prod"
+        # Create super user with default pass
+        echo "#"
+        echo "# Creating default Super User 'admin' with password 'admin'"
+        echo "#"
+        CMD='echo "from django.contrib.auth.models import User; User.objects.create_superuser(\'admin\', admin@example.com', \'admin\')" | manage.py shell --settings=settings_prod'
+        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && $CMD"
     fi
     
     # Lighttpd config
