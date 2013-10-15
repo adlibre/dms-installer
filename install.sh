@@ -138,7 +138,7 @@ function _deploy_dms {
         echo "#"
         echo "# Creating default Super User 'admin' with email '${SUPERUSER_EMAIL}'"
         echo "#"
-        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && manage.py createsuperuser --username=admin --email=${SUPERUSER_EMAIL} --settings=settings_prod"
+        su ${DMS_DEPLOY_USER} -c "cd ${DEPLOY_ROOT}/${DEPLOY_INSTANCE} && source bin/activate && manage.py createsuperuser --username=admin --email=${SUPERUSER_EMAIL} --noinput --settings=settings_prod"
     fi
     
     # Lighttpd config
