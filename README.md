@@ -52,6 +52,7 @@ For the simplest install install all the components on a single host with
 After installation you will still need to perform the following before you will
 have a usable DMS instance.
 
+* Disable or modify the _iptables_ firewall on the host to allow HTTP access
 * Customise your __adlibre_dms/local_settings.py__
 * Reset the _admin_ user password and email address using __manage.py__
 * Configure your document type rules in _http://dms/admin/_
