@@ -2,7 +2,7 @@
 # 
 # Adlibre DMS Installer v0.1.0
 #
-# Usage eg: curl -s https://raw.github.com/macropin/dms-installer/master/install.sh | bash -s all
+# Usage eg: curl -s https://raw.github.com/adlibre/dms-installer/master/install.sh | bash -s all
 #
 # TODO:
 #     * Warn if iptables prevent access to http
