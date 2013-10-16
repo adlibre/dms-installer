@@ -1,7 +1,8 @@
 # Adlibre DMS Installer
 
 This will install the latest version of Adlibre DMS on a [CentOS 6](http://www.centos.org) minimal
-install. 
+install. The easiest way to use it is to run `curl -s https://raw.github.com/adlibre/dms-installer/master/install.sh | bash -s all`
+from a root shell.
 
 ## Usage
 
