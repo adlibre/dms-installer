@@ -143,7 +143,7 @@ function _deploy_dms {
     
     # Lighttpd config
     ln -f -s ${DEPLOY_ROOT}/${DEPLOY_INSTANCE}/deployment/lighttpd.conf /etc/lighttpd/vhosts.d/${DEPLOY_INSTANCE}.conf
-    service lighttpd reload
+    service lighttpd restart
     
     # Install Crontab
     # TODO: add check if this is already setup.
